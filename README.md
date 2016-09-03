@@ -9,6 +9,7 @@ A very basic project to make it easier to jump-start other PyQt/PySide projects
 * Custom PNG icon with correct exhibition on taskbar
 * Simple callback thread example
 * CHANGELOG.md example
+* Logging utilities using the `logging` default module
 
 ### Install dependencies
 
