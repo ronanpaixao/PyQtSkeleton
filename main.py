@@ -104,7 +104,7 @@ class WndMain(QtWidgets.QMainWindow):
         logger = logging.getLogger()
         logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                            datefmt='%Y-%m-%d %H:%M')
+                            datefmt='%Y-%m-%d %H:%M:%S')
         consoleHandler.setFormatter(logger.handlers[0].formatter)
         logger.name = "<app_name>"
         logger.addHandler(consoleHandler)
