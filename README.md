@@ -10,6 +10,7 @@ A very basic project to make it easier to jump-start other PyQt/PySide projects
 * Simple callback thread example
 * CHANGELOG.md example
 * Logging utilities using the `logging` default module
+* Simple run.py to execute simple commands (a little like Make). No dependencies.
 
 ### Install dependencies
 
