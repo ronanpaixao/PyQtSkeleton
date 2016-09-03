@@ -27,15 +27,15 @@ from qtpy import QtCore, QtGui, QtWidgets, uic
 
 import six
 
-#%%
+#%% PyInstaller Utilities
 def frozen(filename):
     """Returns the filename for a frozen file (program file which may be
     included inside the executable created by PyInstaller).
     """
     if getattr(sys, 'frozen', False):
-        return osp.join(sys._MEIPASS, 'data', 'wndmain.ui')
+        return osp.join(sys._MEIPASS, filename)
     else:
-        return osp.join('data', 'wndmain.ui')
+        return filename
 
 #%% I usually need some sort of file/dir opening function
 if sys.platform == 'darwin':
@@ -120,7 +120,7 @@ class WndMain(QtWidgets.QMainWindow):
         self.thread.start()
 
     def initUI(self):
-        ui_file = frozen('wndmain.ui')
+        ui_file = frozen(osp.join('data', 'wndmain.ui'))
         uic.loadUi(ui_file, self)
         self.show()
 

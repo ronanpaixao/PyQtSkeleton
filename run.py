@@ -16,7 +16,7 @@ import sys
 import os
 import os.path as osp
 import argparse
-from subprocess import Popen
+from subprocess import Popen, call
 
 #%% Commands
 def cmd_designer():
@@ -33,6 +33,10 @@ def cmd_linguist():
     "Launch Qt Linguist"
     exe = osp.join(sys.exec_prefix, "Library", "bin", "linguist")
     Popen(exe)
+
+def cmd_pyinstaller():
+    "Run PyInstaller with spec file"
+    call(["pyinstaller", "main.spec"])
 
 #%% Execution
 if __name__ == "__main__":
