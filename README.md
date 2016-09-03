@@ -8,6 +8,7 @@ A very basic project to make it easier to jump-start other PyQt/PySide projects
 * Begginning wndmain.ui (dynamically loaded)
 * Custom PNG icon with correct exhibition on taskbar
 * Simple callback thread example
+* CHANGELOG.md example
 
 ### Install dependencies
 
