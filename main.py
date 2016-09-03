@@ -33,9 +33,9 @@ def frozen(filename):
     included inside the executable created by PyInstaller).
     """
     if getattr(sys, 'frozen', False):
-        return osp.join(sys._MEIPASS, 'wndmain.ui')
+        return osp.join(sys._MEIPASS, 'data', 'wndmain.ui')
     else:
-        return 'wndmain.ui'
+        return osp.join('data', 'wndmain.ui')
 
 #%% I usually need some sort of file/dir opening function
 if sys.platform == 'darwin':
