@@ -9,7 +9,7 @@ See LICENSE for details.
 
 @author: <author>
 """
-
+# Built-in imports
 from __future__ import division, unicode_literals, print_function
 
 import sys
@@ -23,12 +23,13 @@ import argparse
 #%% Setup PyQt's v2 APIs. Must be done before importing PyQt or PySide
 import rthook
 
-#%%
+#%% Third-party imports
 from qtpy import QtCore, QtGui, QtWidgets, uic
 
 import six
 
-#%% PyInstaller Utilities
+#%% Global functions
+# PyInstaller utilities
 def frozen(filename):
     """Returns the filename for a frozen file (program file which may be
     included inside the executable created by PyInstaller).
@@ -38,7 +39,7 @@ def frozen(filename):
     else:
         return filename
 
-#%% I usually need some sort of file/dir opening function
+# I usually need some sort of file/dir opening function
 if sys.platform == 'darwin':
     def show_file(path):
         subprocess.Popen(['open', '--', path])
@@ -81,9 +82,16 @@ class CallbackThread(QtCore.QThread):
     def run(self):
         self.ret = self.callback(self)
 
-#%% Logging to GUI
+#%% Qt-enabled logging handler. Allows logging to GUI
 class ConsoleWindowLogHandler(logging.Handler, QtCore.QObject):
+    """Qt-enabled logging handler
+
+    Allows logging to GUI by connecting the ``log`` signal to the receiving
+    object's slot.
+    """
+    # Qt signals
     log = QtCore.pyqtSignal(str, name="log")
+
     def __init__(self, parent=None):
         super(ConsoleWindowLogHandler, self).__init__()
         QtCore.QObject.__init__(self, parent)
@@ -92,13 +100,12 @@ class ConsoleWindowLogHandler(logging.Handler, QtCore.QObject):
         message = unicode(self.format(logRecord))
         self.log.emit(message)
 
-#%%
+#%% Main window class
 class WndMain(QtWidgets.QMainWindow):
-    ######################
-    ### Initialization ###
-    ######################
+    ### Initialization
     def __init__(self, *args, **kwargs):
         super(WndMain, self).__init__(*args, **kwargs)
+        # Initialize UI (open main window)
         self.initUI()
         # Logging setup
         consoleHandler = ConsoleWindowLogHandler(self.txtLog)
@@ -113,7 +120,7 @@ class WndMain(QtWidgets.QMainWindow):
         self.logger = logger
         # Threading example with new-style connections
         self.thread = CallbackThread(self)
-        def callback_fcn(self, t=2):
+        def callback_fcn(self, t=2):  # Use defaults to pass arguments
             self.sleep(t)
             logging.info("Thread finished.")  # Shouldn't translate log msgs
         self.thread.callback = callback_fcn
@@ -125,6 +132,7 @@ class WndMain(QtWidgets.QMainWindow):
         uic.loadUi(ui_file, self)
         self.show()
 
+    ### Qt slots
     @QtCore.pyqtSlot()
     def on_thread_finished(self):
         QtWidgets.QMessageBox.information(self,
@@ -135,17 +143,21 @@ class WndMain(QtWidgets.QMainWindow):
     def on_consoleHandler_log(self, message):
         self.txtLog.appendPlainText(message)
 
-#%%
+#%% Main execution
+# Runs when executing script directly (not importing).
 if __name__ == '__main__':
-    # Properly register window icon
+    ### Properly register window icon
     myappid = u'br.com.dapaixao.pyqtskeleton.1.0'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    ### Grab existing QApplication
+    # Only one QApplication is allowed per process. This allows running inside
+    # Qt-based IDEs like Spyder.
     existing = QtWidgets.qApp.instance()
     if existing:
         app = existing
     else:
         app = QtWidgets.QApplication(sys.argv)
-
+    ### Parsing command-line arguments/options
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", nargs="?",
                         help="Language to run (override system language)")
@@ -155,12 +167,13 @@ if __name__ == '__main__':
         parser.print_help()
         sys.exit(-1)
     lang = args.lang or QtCore.QLocale.system().name()
-    # Setup internationalization/localization (i18n/l10n)
+    ### Setup internationalization/localization (i18n/l10n)
     translator = QtCore.QTranslator()
     translator.load(frozen(osp.join("data", "main_{}.qm".format(lang))))
     QtWidgets.qApp.installTranslator(translator)
+    ### Create main window and run
     wnd = WndMain()
     if existing:
-        self = wnd
+        self = wnd  # Makes it easier to debug with Spyder's F9 inside a class
     else:
         sys.exit(app.exec_())

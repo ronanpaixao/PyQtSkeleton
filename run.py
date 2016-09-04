@@ -9,7 +9,7 @@ See LICENSE for details.
 
 @author: <author>
 """
-# Imports
+# Built-in imports
 from __future__ import unicode_literals, print_function
 
 import sys
@@ -20,6 +20,9 @@ import inspect
 from subprocess import Popen, call
 
 #%% Commands
+# Define your commands here. Commands are functions whose names start with
+# "cmd_". Function arguments are automatically converted to optional command-
+# line arguments. Docstrings are printed on script help.
 def cmd_designer():
     "Launch Qt Designer"
     exe = osp.join(sys.exec_prefix, "Library", "bin", "designer")
@@ -43,10 +46,11 @@ def cmd_translate(lang=None):
     """Translate applications with Qt Linguist
         Optional argument:
             --lang LANG - Language to create/translate [defaults to system language]"""
-#    from IPython import embed; embed()
     from qtpy import PYQT4, PYQT5, PYSIDE, QtCore
-    if lang is None:
+    if lang is None:  # Grab system language if not specified
         lang = QtCore.QLocale.system().name()
+    ### Run pylupdate (extract translatable strings from source)
+    # Generates .TS file
     if PYQT4:
         pylupdate = "pylupdate4"
     elif PYQT5:
@@ -60,17 +64,22 @@ def cmd_translate(lang=None):
                 print(osp.join(r, f))
                 exe.append(osp.join(r, f))
     tsfile = "main_{}.ts".format(lang)
-    qmfile = "main_{}.qm".format(lang)
     exe.extend(["-ts", tsfile])
-    print(*exe)
     call(exe)
+    ### Open Qt Linguist
+    # Blocks execution until it closes
     exe = osp.join(sys.exec_prefix, "Library", "bin", "linguist")
     call([exe, tsfile])
+    ### Run lrelease
+    # Converts .TS file to .QM (binary translation file)
+    qmfile = "main_{}.qm".format(lang)
     exe = osp.join(sys.exec_prefix, "Library", "bin", "lrelease")
     call([exe, tsfile, "-qm", osp.join("data", qmfile)])
 
-#%% Execution
+#%% Main execution
+# Runs when executing script directly (not importing).
 if __name__ == "__main__":
+    ### Find commands from local variables
     cmds = {}
     max_len = 0
     for name, obj in locals().items():
@@ -81,12 +90,13 @@ if __name__ == "__main__":
               "\n    ".join(["{n:{width}}: {o.__doc__}"
               .format(n=k, o=v, width=max_len)
               for k, v in cmds.items()]))
-
+    ### Setup command-line argument parsing
     formatter = argparse.RawTextHelpFormatter
     parser = argparse.ArgumentParser(description="Utility to run utilities.",
                                      formatter_class=formatter,
                                      epilog=epilog)
     parser.add_argument("command", nargs="+", help="Command to execute")
+    ### Inspect commands and grab optional arguments
     cmd_args = {}
     for cmd, fcn in cmds.items():
         try:  # PY2
@@ -98,11 +108,14 @@ if __name__ == "__main__":
         cmd_args[cmd] = args
         for arg in args:
             parser.add_argument("--" + arg)
+    ### Parse arguments
     try:
         args = parser.parse_args()
     except:
         parser.print_help()
         sys.exit(-1)
+    ### Run commands in sequence
+    # Check for invalid commands
     for cmd in args.command:
         if cmd not in cmds:
             print("Invalid command: {}\n\n{}".format(cmd, epilog))
