@@ -16,6 +16,7 @@ import sys
 import os
 import os.path as osp
 import argparse
+import inspect
 from subprocess import Popen, call
 
 #%% Commands
@@ -40,7 +41,9 @@ def cmd_pyinstaller():
 
 def cmd_translate(lang=None):
     """Translate applications with Qt Linguist
-        optional argument: --lang LANG [defaults to system language]"""
+        Optional argument:
+            --lang LANG - Language to create/translate [defaults to system language]"""
+#    from IPython import embed; embed()
     from qtpy import PYQT4, PYQT5, PYSIDE, QtCore
     if lang is None:
         lang = QtCore.QLocale.system().name()
@@ -84,6 +87,17 @@ if __name__ == "__main__":
                                      formatter_class=formatter,
                                      epilog=epilog)
     parser.add_argument("command", nargs="+", help="Command to execute")
+    cmd_args = {}
+    for cmd, fcn in cmds.items():
+        try:  # PY2
+            args = inspect.getargspec(fcn).args
+        except AttributeError:  # PY3
+            args = [parameter.name for parameter
+                    in inspect.signature(fcn).parameters.values()
+                    if parameter.kind == parameter.POSITIONAL_OR_KEYWORD]
+        cmd_args[cmd] = args
+        for arg in args:
+            parser.add_argument("--" + arg)
     try:
         args = parser.parse_args()
     except:
@@ -94,4 +108,4 @@ if __name__ == "__main__":
             print("Invalid command: {}\n\n{}".format(cmd, epilog))
             sys.exit(-2)
     for cmd in args.command:
-        cmds[cmd]()
+        cmds[cmd](**{arg: getattr(args, arg) for arg in cmd_args[cmd] if arg in args})

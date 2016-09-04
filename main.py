@@ -18,6 +18,7 @@ import os.path as osp
 import subprocess
 import ctypes
 import logging
+import argparse
 
 #%% Setup PyQt's v2 APIs. Must be done before importing PyQt or PySide
 import rthook
@@ -144,9 +145,19 @@ if __name__ == '__main__':
         app = existing
     else:
         app = QtWidgets.QApplication(sys.argv)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--lang", nargs="?",
+                        help="Language to run (override system language)")
+    try:
+        args = parser.parse_args()
+    except:
+        parser.print_help()
+        sys.exit(-1)
+    lang = args.lang or QtCore.QLocale.system().name()
     # Setup internationalization/localization (i18n/l10n)
     translator = QtCore.QTranslator()
-    translator.load(frozen(osp.join("data", "main.qm")))
+    translator.load(frozen(osp.join("data", "main_{}.qm".format(lang))))
     QtWidgets.qApp.installTranslator(translator)
     wnd = WndMain()
     if existing:
