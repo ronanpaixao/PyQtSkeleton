@@ -114,7 +114,7 @@ class WndMain(QtWidgets.QMainWindow):
         self.thread = CallbackThread(self)
         def callback_fcn(self, t=2):
             self.sleep(t)
-            logging.info(self.tr("Thread finished."))
+            logging.info("Thread finished.")  # Shouldn't translate log msgs
         self.thread.callback = callback_fcn
         self.thread.finished.connect(self.on_thread_finished)
         self.thread.start()
@@ -144,6 +144,10 @@ if __name__ == '__main__':
         app = existing
     else:
         app = QtWidgets.QApplication(sys.argv)
+    # Setup internationalization/localization (i18n/l10n)
+    translator = QtCore.QTranslator()
+    translator.load(frozen(osp.join("data", "main.qm")))
+    QtWidgets.qApp.installTranslator(translator)
     wnd = WndMain()
     if existing:
         self = wnd

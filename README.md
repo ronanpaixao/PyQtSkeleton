@@ -20,9 +20,9 @@ A very basic project to make it easier to jump-start other PyQt/PySide projects
     * Exclusion of unused Qt modules (comment if your app uses them)
     * Uses UPX if available
 Note: when using some libraries, you'll need setuptools version 19.2, or the EXE generation might fail.
+* Translation i18n support through Qt Linguist. Only one translation supported for now.
 
 ##Planned
-* Translation file
 
 ### Install dependencies
 
