@@ -105,6 +105,9 @@ class WndMain(QtWidgets.QMainWindow):
     ### Initialization
     def __init__(self, *args, **kwargs):
         super(WndMain, self).__init__(*args, **kwargs)
+        # Setup settings storage
+        self.settings = QtCore.QSettings("settings.ini",
+                                         QtCore.QSettings.IniFormat)
         # Initialize UI (open main window)
         self.initUI()
         # Logging setup
@@ -130,7 +133,17 @@ class WndMain(QtWidgets.QMainWindow):
     def initUI(self):
         ui_file = frozen(osp.join('data', 'wndmain.ui'))
         uic.loadUi(ui_file, self)
+        # Load window geometry and state
+        self.restoreGeometry(self.settings.value("geometry", ""))
+        self.restoreState(self.settings.value("windowState", ""))
         self.show()
+
+    ### Function overrides:
+    def closeEvent(self, e):
+        # Write window geometry and state to config file
+        self.settings.setValue("geometry", self.saveGeometry())
+        self.settings.setValue("windowState", self.saveState())
+        e.accept()
 
     ### Qt slots
     @QtCore.pyqtSlot()

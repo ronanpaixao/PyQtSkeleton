@@ -21,6 +21,7 @@ A very basic project to make it easier to jump-start other PyQt/PySide projects
     * Uses UPX if available
 Note: when using some libraries, you'll need setuptools version 19.2, or the EXE generation might fail.
 * Translation i18n support through Qt Linguist. Supports translating (and loading) in multiple languages with the `--lang` option, which defaults to the system's language.
+* Window position and state saving. Settings are stored in an INI file, which can be used for other program settings.
 
 ### Install dependencies
 
