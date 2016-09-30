@@ -184,6 +184,7 @@ if __name__ == '__main__':
     translator = QtCore.QTranslator()
     translator.load(frozen(osp.join("data", "main_{}.qm".format(lang))))
     QtWidgets.qApp.installTranslator(translator)
+    QtCore.QLocale().setDefault(QtCore.QLocale(lang))
     ### Create main window and run
     wnd = WndMain()
     if existing:
