@@ -90,14 +90,14 @@ class ConsoleWindowLogHandler(logging.Handler, QtCore.QObject):
     object's slot.
     """
     # Qt signals
-    log = QtCore.pyqtSignal(str, name="log")
+    log = QtCore.Signal(str, name="log")
 
     def __init__(self, parent=None):
         super(ConsoleWindowLogHandler, self).__init__()
         QtCore.QObject.__init__(self, parent)
 
     def emit(self, logRecord):
-        message = unicode(self.format(logRecord))
+        message = six.text_type(self.format(logRecord))
         self.log.emit(message)
 
 #%% Main window class
@@ -146,13 +146,13 @@ class WndMain(QtWidgets.QMainWindow):
         e.accept()
 
     ### Qt slots
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_thread_finished(self):
         QtWidgets.QMessageBox.information(self,
                                           self.tr("Information"),
                                           self.tr("Thread finished."))
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def on_consoleHandler_log(self, message):
         self.txtLog.appendPlainText(message)
 
