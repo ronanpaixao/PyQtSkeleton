@@ -1,3 +1,6 @@
 PyInstaller
 qtpy
 Pillow
+PyQt5
+sip
+six
