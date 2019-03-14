@@ -82,6 +82,7 @@ if __name__ == "__main__":
     ### Find commands from local variables
     cmds = {}
     max_len = 0
+    name = obj = None
     for name, obj in locals().items():
         if name.startswith('cmd_'):
             cmds[name[4:]] = obj
