@@ -134,8 +134,8 @@ class WndMain(QtWidgets.QMainWindow):
         ui_file = frozen(osp.join('data', 'wndmain.ui'))
         uic.loadUi(ui_file, self)
         # Load window geometry and state
-        self.restoreGeometry(self.settings.value("geometry", ""))
-        self.restoreState(self.settings.value("windowState", ""))
+        self.restoreGeometry(self.settings.value("geometry", b""))
+        self.restoreState(self.settings.value("windowState", b""))
         self.show()
 
     ### Function overrides:
