@@ -42,7 +42,7 @@ a = Analysis(['main.py'],
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
-exclude_starts = [
+exclude_binaries = (
     'qt4_plugins',
     '_cffi',
     '_hashlib',
@@ -68,29 +68,18 @@ exclude_starts = [
     'win32wnet',
     'win32ui',
     'select',
-]
-def include_binary(binary):
-    for start in exclude_starts:
-        if binary.startswith(start):
-            return False
-    return True
+)
+a.binaries = [binary for binary in a.binaries if
+              not binary[0].startswith(exclude_binaries)]
 
-a.binaries = [binary for binary in a.binaries if include_binary(binary[0])]
-
-exclude_datas = [
+exclude_datas = (
     r'tcl\encoding',
     r'tcl\tzdata',
     r'tcl\msgs',
     r'tk\images',
     r'tk\msgs',
-]
-def include_data(data):
-    for start in exclude_datas:
-        if data.startswith(start):
-            return False
-    return True
-
-a.datas = [data for data in a.datas if include_data(data[0])]
+)
+a.datas = [data for data in a.datas if not data[0].startswith(exclude_datas)]
 
 if single_file:
     exe_files = [
