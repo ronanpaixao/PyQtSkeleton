@@ -9,6 +9,10 @@ See LICENSE for details.
 @author: <author>
 """
 
+# Allow PyQt5 to pass its useless DLL check
+import os
+os.environ['PATH'] += ';' + os.path.dirname(__file__)
+
 # Setup PyQt's v2 APIs
 import sip
 API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl",
