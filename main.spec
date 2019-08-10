@@ -20,9 +20,10 @@ datas = []
 for r, d, fs in os.walk("data"):
     datas.extend([(osp.join(r, f), r) for f in fs])
 datas.append(('build/logo.ico', '.'))
-    
+
 a = Analysis(['main.py'],
-             binaries=None,
+             pathex=[],
+             binaries=[],
              datas=datas,
              hiddenimports=[],
              hookspath=[],
@@ -36,7 +37,8 @@ a = Analysis(['main.py'],
                       ],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
-             cipher=block_cipher)
+             cipher=block_cipher,
+             noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
@@ -104,6 +106,7 @@ exe = EXE(pyz,
           exclude_binaries=not single_file,
           name=name,
           debug=False,
+          bootloader_ignore_signals=False,
           #strip=True,
           upx=True,
           console=False,
@@ -116,4 +119,5 @@ if not single_file:
                    a.datas,
                    strip=False,
                    upx=True,
+                   upx_exclude=[],
                    name=name)
