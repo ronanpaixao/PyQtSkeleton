@@ -4,25 +4,7 @@ single_file = True
 name = "PyQtSkeleton"
 
 import sys
-import warnings
-import setuptools
-if setuptools.__version__ != '19.2':
-    warnings.warn("When using some libraries, you may need to use only "
-        "setuptools version 19.2. If so, uncomment the lines below.",
-        RuntimeWarning)
-#    raise RuntimeError('''
-#Compiling to EXE requires setuptools 19.2
-#> conda install setuptools=19.2
-#''')
-
 import os.path as osp
-st_path = osp.join('build', 'main', 'setuptools-{}-py{}.{}.egg'
-    .format(setuptools.__version__, 
-    sys.version_info.major, 
-    sys.version_info.minor))
-if osp.exists(st_path):
-    import shutil
-    shutil.rmtree(st_path)
 
 # Convert logo PNG to ICO
 png_filename = osp.join('data', 'logo.png')
